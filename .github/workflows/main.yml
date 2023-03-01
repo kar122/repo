@@ -1,0 +1,20 @@
+name: periodic-broken-line-checks
+
+on: 
+ schedule: 
+   - cron: '0 0 * * *'
+ pull_request:
+    types: [opened, synchronize]
+    paths: 
+      - .github/workflows/periodic-broken-link-checks.yml
+
+jobs:
+  broken-link-checker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Broken link checker
+        env:
+          INPUT_URL: https://www.telangana.gov.in/
+        run: |
+          export INPUT_CMD_PARAMS="--one-page-only --verbose --buffer-size=8192 --concurrency=10 --exclude=($( echo ${EXCLUDE} | tr ' ' '|'))" 
+          wget -q0- https://raw.githubusercontent.com/ruzickap/action-my-broken-link-checker/v1/entrypoint.sh | bash 
